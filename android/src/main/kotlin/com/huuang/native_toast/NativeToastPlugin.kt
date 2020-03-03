@@ -48,9 +48,6 @@ class NativeToastPlugin : FlutterPlugin, MethodCallHandler {
         }
 
         val context: Context = this.flutterPluginBinding!!.applicationContext
-        val paint = Paint()
-        paint.textSize = 17f
-
         val scale = context.resources.displayMetrics.density.toInt()
         //匹配所有汉字
         val p = Pattern.compile("[\u4e00-\u9fa5]")
@@ -83,9 +80,11 @@ class NativeToastPlugin : FlutterPlugin, MethodCallHandler {
 
         var temp = 0
         var lineCount = 0
-        val maxWidth = context.resources.displayMetrics.widthPixels - 100f
+        val paint = Paint()
+        paint.textSize = 17f
+        val maxWidth = context.resources.displayMetrics.widthPixels * 0.8 / scale
         while (temp < message.length) {
-            temp += paint.breakText(message.substring(temp), true, maxWidth, null)
+            temp += paint.breakText(message.substring(temp), true, maxWidth.toFloat(), null)
             lineCount++
         }
 
@@ -104,7 +103,7 @@ class NativeToastPlugin : FlutterPlugin, MethodCallHandler {
         contentLinearLayout.layoutParams = backgroundView.layoutParams
         contentLinearLayout.gravity = Gravity.CENTER
         contentLinearLayout.orientation = LinearLayout.VERTICAL
-
+        contentLinearLayout.setPadding(18 * scale, 0, 18 * scale, 0)
 
         val textView = TextView(context)
         textView.text = message
